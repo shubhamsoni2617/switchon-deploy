@@ -11,12 +11,12 @@ app.use(cors());
 app.use(require("./routes/user"));
 app.use(require("./routes/form"));
 
-if (process.env.ENV !== "DEVELOPMENT") {
-  app.use(express.static("client/build"));
-  app.use(function (req, res) {
-    res.sendFile(path.join(__dirname, "../client/build/index.html"));
-  });
-}
+// if (process.env.ENV !== "DEVELOPMENT") {
+app.use(express.static("client/build"));
+app.use(function (req, res) {
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
+});
+// }
 
 app.use(errorHandlers.notFound);
 app.use(errorHandlers.mongoseErrors);
