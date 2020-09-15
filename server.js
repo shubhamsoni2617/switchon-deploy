@@ -1,20 +1,20 @@
 const express = require("express");
-require("./mongoose");
+require("./app/mongoose");
 const cors = require("cors");
 const path = require("path");
-const errorHandlers = require("./handlers/errorHandlers");
+const errorHandlers = require("./app/handlers/errorHandlers");
 const app = express();
 const port = process.env.PORT || 8000;
 app.use(express.json());
 app.use(cors());
 
-app.use(require("./routes/user"));
-app.use(require("./routes/form"));
+app.use(require("./app/routes/user"));
+app.use(require("./app/routes/form"));
 
 // if (process.env.ENV !== "DEVELOPMENT") {
 app.use(express.static("client/build"));
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
+  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
 });
 // }
 
@@ -30,4 +30,4 @@ const server = app.listen(port, () =>
   console.log(`Example app listening at http://localhost:${port}`)
 );
 
-require("./socket")(server);
+require("./app/socket")(server);
