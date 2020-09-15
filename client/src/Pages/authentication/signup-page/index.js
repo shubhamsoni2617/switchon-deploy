@@ -23,7 +23,7 @@ const SignupPage = ({ socket }) => {
         password,
         department,
       });
-      io("http://localhost:8000", {
+      io("https://morning-cliffs-18166.herokuapp.com/", {
         query: {
           username,
           department,
