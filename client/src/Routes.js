@@ -1,19 +1,20 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { Switch, Route, Redirect, useHistory } from "react-router-dom";
-import io from "socket.io-client";
-import makeToast from "./Toaster";
-import LoginPage from "./Pages/authentication/login-page";
-import FormPage from "./Pages/form-page";
-import PrivateRoute from "./PrivateRoute";
-import SignupPage from "./Pages/authentication/signup-page";
-import { getToken, Axios } from "./utils";
-import { reducer, initialState } from "./reducer";
-import PendingPage from "./Pages/user-form-status/Pending";
-import ApprovedPage from "./Pages/user-form-status/Approved";
-import RejectedPage from "./Pages/user-form-status/Rejected";
-import ApprovalRequest from "./Pages/approval-request";
-import Notifications from "./Pages/notifications";
-import LoaderModal from "./loader-modal/LoaderModal";
+import React, { useState, useEffect, useReducer } from 'react';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+import io from 'socket.io-client';
+import makeToast from './Toaster';
+import LoginPage from './Pages/authentication/login-page';
+import FormPage from './Pages/form-page';
+import PrivateRoute from './PrivateRoute';
+import SignupPage from './Pages/authentication/signup-page';
+import { getToken, Axios } from './utils';
+import { reducer, initialState } from './reducer';
+import PendingPage from './Pages/user-form-status/Pending';
+import ApprovedPage from './Pages/user-form-status/Approved';
+import RejectedPage from './Pages/user-form-status/Rejected';
+import ApprovalRequest from './Pages/approval-request';
+import Notifications from './Pages/notifications';
+import LoaderModal from './loader-modal/LoaderModal';
+import About from './Pages/about';
 
 const Routes = () => {
   const [socket, setSocket] = useState(null);
@@ -22,19 +23,19 @@ const Routes = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const setupSocket = () => {
     if (!socket) {
-      const newSocket = io("https://morning-cliffs-18166.herokuapp.com", {
+      const newSocket = io('https://morning-cliffs-18166.herokuapp.com', {
         query: {
           token: getToken(),
         },
       });
 
-      newSocket.on("disconnect", () => {
+      newSocket.on('disconnect', () => {
         setSocket(null);
         setTimeout(setupSocket, 3000);
         // makeToast("error", "Socket Disconnected!");
       });
 
-      newSocket.on("connect", () => {
+      newSocket.on('connect', () => {
         // makeToast("success", "Socket Connected!");
       });
       setSocket(newSocket);
@@ -46,14 +47,14 @@ const Routes = () => {
       if (!getToken()) return;
       try {
         setLoading(true);
-        const response = await Axios.get("/userdata", {
+        const response = await Axios.get('/userdata', {
           headers: {
-            Authorization: "Bearer " + getToken(),
+            Authorization: 'Bearer ' + getToken(),
           },
         });
 
         dispatch({
-          type: "SET_USER_DATA",
+          type: 'SET_USER_DATA',
           payload: response.data,
         });
         setupSocket();
@@ -63,12 +64,12 @@ const Routes = () => {
         console.log(111, history.location.pathname);
         sessionStorage.clear();
         if (
-          history.location.pathname === "/login" ||
-          history.location.pathname === "/signup"
+          history.location.pathname === '/login' ||
+          history.location.pathname === '/signup'
         )
           return;
-        makeToast("error", "User not authenticated");
-        history.push("/login");
+        makeToast('error', 'User not authenticated');
+        history.push('/login');
       }
     };
     fetchUserData();
@@ -77,44 +78,44 @@ const Routes = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on("approvalDepartment", (payload) => {
+      socket.on('approvalDepartment', (payload) => {
         dispatch({
-          type: "UPDATE_APPROVAL_REQUESTS",
+          type: 'UPDATE_APPROVAL_REQUESTS',
           payload,
         });
       });
 
-      socket.on("stateUpdated", (payload) => {
+      socket.on('stateUpdated', (payload) => {
         dispatch({
-          type: "UPDATE_USER_FORMS",
+          type: 'UPDATE_USER_FORMS',
           payload,
         });
       });
 
-      socket.on("notification", (payload) => {
+      socket.on('notification', (payload) => {
         dispatch({
-          type: "UPDATE_NOTIFICATIONS",
+          type: 'UPDATE_NOTIFICATIONS',
           payload,
         });
-        makeToast("info", "New Notification");
+        makeToast('info', 'New Notification');
       });
 
-      socket.on("newUser", (payload) => {
-        makeToast("info", "New user registered");
+      socket.on('newUser', (payload) => {
+        makeToast('info', 'New user registered');
         dispatch({
-          type: "UPDATE_OTHER_DEPARTMENT_USER",
+          type: 'UPDATE_OTHER_DEPARTMENT_USER',
           payload,
         });
       });
     }
   }, [socket]);
   return (
-    <div className="container">
+    <div className='container'>
       <LoaderModal isLoading={loading} />
       <Switch>
-        <Redirect from="/" to={`/${getToken() ? `form` : `login`}`} exact />
+        <Redirect from='/' to={`/${getToken() ? `form` : `login`}`} exact />
         <Route
-          path="/login"
+          path='/login'
           render={(props) => (
             <LoginPage
               setupSocket={setupSocket}
@@ -124,36 +125,37 @@ const Routes = () => {
           )}
           exact
         />
+        <Route path='/about' render={(props) => <About {...props} exact />} />
         <Route
-          path="/signup"
+          path='/signup'
           render={(props) => <SignupPage {...props} socket={socket} exact />}
         />
         <PrivateRoute
-          path="/form"
+          path='/form'
           component={FormPage}
           compProps={{ state, dispatch, socket }}
           exact
         />
         <PrivateRoute
-          path="/pending"
+          path='/pending'
           component={PendingPage}
           compProps={{ pending: state.pending }}
           exact
         />
         <PrivateRoute
-          path="/rejected"
+          path='/rejected'
           component={RejectedPage}
           compProps={{ rejected: state.rejected }}
           exact
         />
         <PrivateRoute
-          path="/approved"
+          path='/approved'
           component={ApprovedPage}
           compProps={{ approved: state.approved }}
           exact
         />
         <PrivateRoute
-          path="/request"
+          path='/request'
           component={ApprovalRequest}
           compProps={{
             approvalRequest: state.approvalRequest,
@@ -164,7 +166,7 @@ const Routes = () => {
           exact
         />
         <PrivateRoute
-          path="/notifications"
+          path='/notifications'
           component={Notifications}
           compProps={{
             notifications: state.notifications,
