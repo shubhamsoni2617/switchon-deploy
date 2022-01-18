@@ -18,18 +18,19 @@ const buildPath = path.join(__dirname, '..', 'build');
 app.use(express.static(buildPath));
 // if (process.env.ENV !== "DEVELOPMENT") {
 // app.use(express.static('client/build'));
-// app.get('*', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-// });
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '..', 'build', 'index.html'));
+});
 // }
 
 app.use(errorHandlers.notFound);
 app.use(errorHandlers.mongoseErrors);
-if (process.env.ENV === 'DEVELOPMENT') {
-  app.use(errorHandlers.developmentErrors);
-} else {
-  app.use(errorHandlers.productionErrors);
-}
+// if (process.env.ENV === 'DEVELOPMENT') {
+//   app.use(errorHandlers.developmentErrors);
+// } else {
+//   app.use(errorHandlers.productionErrors);
+// }
+app.use(errorHandlers.productionErrors);
 
 const server = app.listen(port, () =>
   console.log(`Example app listening at http://localhost:${port}`)
