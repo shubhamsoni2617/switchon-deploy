@@ -30,7 +30,7 @@ app.use(errorHandlers.mongoseErrors);
 // } else {
 //   app.use(errorHandlers.productionErrors);
 // }
-app.use(errorHandlers.productionErrors);
+app.use(errorHandlers.developmentErrors);
 
 const server = app.listen(port, () =>
   console.log(`Example app listening at http://localhost:${port}`)
