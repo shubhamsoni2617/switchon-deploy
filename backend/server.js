@@ -1,5 +1,5 @@
 const express = require('express');
-require('dotenv').config();
+// require('dotenv').config();
 
 require('./mongoose');
 const cors = require('cors');
@@ -8,8 +8,8 @@ const errorHandlers = require('./handlers/errorHandlers');
 const app = express();
 const port = process.env.PORT || 8000;
 app.use(express.json());
-app.use(cors());
-app.options('*', cors());
+// app.use(cors());
+// app.options('*', cors());
 
 app.use(require('./routes/user'));
 app.use(require('./routes/form'));
