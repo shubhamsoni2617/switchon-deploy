@@ -23,7 +23,7 @@ const Routes = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const setupSocket = () => {
     if (!socket) {
-      const newSocket = io('https://morning-cliffs-18166.herokuapp.com', {
+      const newSocket = io('/', {
         query: {
           token: getToken(),
         },
